@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offrir une lettre — Scellé</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--ink:#1a1714;--cream:#f5f0e8;--warm:#e8dfc8;--accent:#8b6f47;--muted:#9e9589;--paper:#faf7f2;--border:rgba(26,23,20,0.15);}
+    body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;min-height:100vh;}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:0.5px solid var(--border);background:var(--cream);position:sticky;top:0;z-index:10;}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:20px;letter-spacing:6px;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+    .nav-step{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+    .progress{display:flex;background:var(--warm);}
+    .prog-step{flex:1;padding:12px 8px;text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.3s;}
+    .prog-step.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .prog-step.done{color:var(--accent);}
+
+    .page{display:none;padding:40px;max-width:660px;margin:0 auto;}
+    .page.active{display:block;animation:fadeIn 0.35s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+    .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:6px;color:var(--ink);}
+    .page-sub{font-size:13px;color:var(--muted);margin-bottom:32px;line-height:1.7;}
+
+    .field{margin-bottom:22px;}
+    .field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .field input,.field select,.field textarea{width:100%;padding:12px 16px;background:var(--paper);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);outline:none;transition:border-color 0.2s;border-radius:0;-webkit-appearance:none;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+    .field textarea{min-height:100px;resize:vertical;line-height:1.8;}
+
+    /* OFFRES */
+    .offres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:8px;}
+    .offre-card{background:var(--paper);padding:24px 16px;text-align:center;cursor:pointer;transition:all 0.2s;}
+    .offre-card:hover{background:var(--cream);}
+    .offre-card.sel{background:var(--ink);}
+    .offre-icon{font-size:18px;margin-bottom:12px;color:var(--accent);}
+    .offre-card.sel .offre-icon{color:rgba(245,240,232,0.6);}
+    .offre-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--ink);margin-bottom:4px;}
+    .offre-card.sel .offre-name{color:var(--cream);}
+    .offre-delai{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+    .offre-card.sel .offre-delai{color:rgba(245,240,232,0.45);}
+    .offre-prix{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--ink);}
+    .offre-card.sel .offre-prix{color:var(--cream);}
+
+    /* PRESTIGE */
+    .prestige-option{border:0.5px solid var(--border);padding:16px 20px;background:var(--paper);cursor:pointer;transition:all 0.2s;display:flex;align-items:flex-start;gap:14px;}
+    .prestige-option:hover{border-color:var(--accent);}
+    .prestige-option.sel{border:1.5px solid var(--accent);background:var(--cream);}
+    .prestige-checkbox{width:18px;height:18px;border:0.5px solid var(--border);background:var(--paper);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all 0.2s;}
+    .prestige-option.sel .prestige-checkbox{background:var(--accent);border-color:var(--accent);}
+    .prestige-check{color:var(--cream);font-size:12px;display:none;}
+    .prestige-option.sel .prestige-check{display:block;}
+    .prestige-info{flex:1;}
+    .prestige-title{font-size:13px;font-weight:400;color:var(--ink);margin-bottom:3px;}
+    .prestige-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+    .prestige-prix{font-size:13px;color:var(--accent);font-weight:400;white-space:nowrap;}
+
+    /* RECAP */
+    .recap{background:var(--paper);border:0.5px solid var(--border);padding:24px;margin-bottom:20px;}
+    .recap-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:13px;}
+    .recap-row:last-child{border:none;font-size:15px;font-weight:400;padding-top:14px;}
+    .recap-row span:first-child{color:var(--muted);}
+
+    .secure-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:20px;}
+    #card-element{padding:14px 16px;background:var(--paper);border:0.5px solid var(--border);}
+    #card-error{color:#c0392b;font-size:12px;margin-top:6px;min-height:18px;}
+
+    .actions{display:flex;gap:12px;margin-top:32px;}
+    .btn-next{flex:1;padding:14px;background:var(--ink);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
+    .btn-next:hover:not(:disabled){background:var(--accent);}
+    .btn-next:disabled{background:var(--muted);cursor:not-allowed;}
+    .btn-back{padding:14px 20px;background:transparent;color:var(--muted);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+    .btn-back:hover{color:var(--ink);border-color:var(--ink);}
+
+    .spinner{display:inline-block;width:14px;height:14px;border:1.5px solid rgba(245,240,232,0.3);border-top-color:var(--cream);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* SUCCÈS */
+    .success-wrap{text-align:center;padding:60px 32px;}
+    .success-icon{font-size:52px;margin-bottom:24px;}
+    .success-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;margin-bottom:14px;}
+    .success-sub{font-size:14px;color:var(--muted);line-height:1.9;max-width:420px;margin:0 auto 20px;}
+    .code-box{background:var(--ink);color:var(--cream);padding:16px 28px;font-family:'Cormorant Garamond',serif;font-size:28px;letter-spacing:6px;display:inline-block;margin-bottom:16px;}
+    .success-note{font-size:12px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 32px;}
+    .prestige-badge{display:inline-block;background:var(--warm);border:0.5px solid var(--accent);padding:8px 20px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:24px;}
+    .btn-home{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:2px;}
+
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    @media(max-width:600px){nav{padding:14px 20px;}.page{padding:24px 20px;}.offres-grid{grid-template-columns:1fr;}.grid2{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Scellé</a>
+  <span class="nav-step" id="nav-step">Étape 1 sur 3</span>
+</nav>
+
+<div class="progress">
+  <div class="prog-step active" id="ps1">Offre & message</div>
+  <div class="prog-step" id="ps2">Vos coordonnées</div>
+  <div class="prog-step" id="ps3">Paiement</div>
+</div>
+
+<!-- ÉTAPE 1 : OFFRE + MESSAGE + PRESTIGE -->
+<div class="page active" id="p1">
+  <p class="eyebrow">Offrir une lettre</p>
+  <h1 class="page-title">Choisir l'offre</h1>
+  <p class="page-sub">Le destinataire recevra un code unique pour écrire sa propre lettre du futur sur notre site.</p>
+
+  <div class="field">
+    <label>Choisir l'offre</label>
+    <div class="offres-grid">
+      <div class="offre-card sel" id="o-simple" onclick="choixOffre(this,'simple')">
+        <div class="offre-icon">✉</div>
+        <p class="offre-name">Lettre simple</p>
+        <p class="offre-delai">Envoi dans 1 an</p>
+        <p class="offre-prix">14,90€</p>
+      </div>
+      <div class="offre-card" id="o-longue" onclick="choixOffre(this,'longue')">
+        <div class="offre-icon">⧗</div>
+        <p class="offre-name">Longue durée</p>
+        <p class="offre-delai">3 ou 5 ans</p>
+        <p class="offre-prix">19,90€</p>
+      </div>
+      <div class="offre-card" id="o-grands" onclick="choixOffre(this,'grands')">
+        <div class="offre-icon">♡</div>
+        <p class="offre-name">Grands moments</p>
+        <p class="offre-delai">10 ans</p>
+        <p class="offre-prix">29,90€</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Option Édition Prestige</label>
+    <div class="prestige-option" id="prestige-opt" onclick="togglePrestige()">
+      <div class="prestige-checkbox"><span class="prestige-check">✓</span></div>
+      <div class="prestige-info">
+        <p class="prestige-title">Édition Prestige — Emballage premium</p>
+        <p class="prestige-desc">Enveloppe vergé ivoire · Cachet de cire bordeaux · Bon cadeau physique glissé dans l'enveloppe · Ruban raphia</p>
+      </div>
+      <span class="prestige-prix">+5,00 €</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Un petit mot pour le destinataire (optionnel)</label>
+    <textarea id="petit-mot" placeholder="Joyeux anniversaire ! Je t'offre ce moment pour écrire à ton futur toi..."></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn-next" onclick="aller(2)">Continuer — Vos coordonnées →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 2 : COORDONNÉES ACHETEUR -->
+<div class="page" id="p2">
+  <p class="eyebrow">Vos coordonnées</p>
+  <h1 class="page-title">Qui offre ce cadeau ?</h1>
+  <p class="page-sub">Nous vous enverrons le code cadeau et le bon cadeau PDF à votre adresse email.</p>
+
+  <div class="grid2">
+    <div class="field">
+      <label>Votre prénom et nom *</label>
+      <input type="text" id="acheteur-nom" placeholder="Thomas Dupont">
+    </div>
+    <div class="field">
+      <label>Votre email *</label>
+      <input type="email" id="acheteur-email" placeholder="thomas@email.com">
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-back" onclick="aller(1)">← Retour</button>
+    <button class="btn-next" onclick="aller(3)">Continuer — Paiement →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 3 : PAIEMENT -->
+<div class="page" id="p3">
+  <p class="eyebrow">Paiement</p>
+  <h1 class="page-title">Dernière étape</h1>
+  <p class="page-sub">Le code cadeau vous sera envoyé immédiatement après le paiement.</p>
+
+  <div class="recap" id="recap"></div>
+
+  <p class="secure-note">🔒 Paiement sécurisé par Stripe</p>
+
+  <div class="field">
+    <label>Carte bancaire</label>
+    <div id="card-element"></div>
+    <div id="card-error"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-back" onclick="aller(2)">← Retour</button>
+    <button class="btn-next" id="btn-pay" onclick="payer()">Offrir cette lettre →</button>
+  </div>
+</div>
+
+<!-- SUCCÈS -->
+<div class="page" id="p4">
+  <div class="success-wrap">
+    <div class="success-icon">🎁</div>
+    <h2 class="success-title">Cadeau créé !</h2>
+    <p class="success-sub">Voici le code cadeau à offrir au destinataire :</p>
+    <div class="code-box" id="code-affiche"></div>
+    <div id="prestige-badge-wrap"></div>
+    <p class="success-note" id="success-note"></p>
+    <a href="index.html" class="btn-home">Retour à l'accueil</a>
+  </div>
+</div>
+
+<script>
+const SUPA_URL  = 'https://syinrjjnyemvfpyqorfu.supabase.co';
+const SUPA_KEY  = 'sb_publishable_mu25XGiq_gxJWdX9Lb6X1g_cjfisyq9';
+const STRIPE_PK = 'pk_test_51TgT1jDy9uyBH7ngM1oNP1tjLXJh8GEhv2Uf0Fe1XTJjTlIZ3CkSxScCQ3fGU9mRWB9gcMDGqlGYDLHDMmtMPUmS00Hu77otlB';
+const PRIX = { simple:14.90, longue:19.90, grands:29.90 };
+const OFFRE_LABEL = { simple:'Lettre simple (1 an)', longue:'Lettre longue durée (3 ou 5 ans)', grands:'Grands moments (10 ans)' };
+
+const S = { step:1, offre:'simple', prestige:false, petitMot:'', acheteurNom:'', acheteurEmail:'' };
+
+const stripe = Stripe(STRIPE_PK);
+const elements = stripe.elements();
+const card = elements.create('card',{style:{base:{fontFamily:'Jost,sans-serif',fontSize:'14px',color:'#1a1714','::placeholder':{color:'#9e9589'}}}});
+let cardMounted = false;
+
+function aller(n) {
+  if (n > S.step) {
+    if (S.step === 2 && !valEtape2()) return;
+  }
+  document.getElementById('p'+S.step).classList.remove('active');
+  const ps = document.getElementById('ps'+S.step);
+  if (ps) { ps.classList.remove('active'); if (n > S.step) ps.classList.add('done'); }
+  S.step = n;
+  document.getElementById('p'+n).classList.add('active');
+  const psn = document.getElementById('ps'+n);
+  if (psn) psn.classList.add('active');
+  document.getElementById('nav-step').textContent = n <= 3 ? 'Étape '+n+' sur 3' : 'Confirmé ✓';
+  if (n === 3) { afficherRecap(); if (!cardMounted) { card.mount('#card-element'); cardMounted = true; } }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function valEtape2() {
+  const nom = document.getElementById('acheteur-nom').value.trim();
+  const email = document.getElementById('acheteur-email').value.trim();
+  if (!nom || !email) { alert('Merci de remplir vos coordonnées.'); return false; }
+  if (!email.includes('@')) { alert('Email invalide.'); return false; }
+  S.acheteurNom = nom;
+  S.acheteurEmail = email;
+  return true;
+}
+
+function choixOffre(el, offre) {
+  document.querySelectorAll('.offre-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  S.offre = offre;
+}
+
+function togglePrestige() {
+  S.prestige = !S.prestige;
+  document.getElementById('prestige-opt').classList.toggle('sel', S.prestige);
+}
+
+function afficherRecap() {
+  const prix = PRIX[S.offre] + (S.prestige ? 5 : 0);
+  document.getElementById('recap').innerHTML = `
+    <div class="recap-row"><span>Offre</span><span>${OFFRE_LABEL[S.offre]}</span></div>
+    ${S.prestige ? '<div class="recap-row"><span>Édition Prestige</span><span>+5,00 €</span></div>' : ''}
+    <div class="recap-row"><span>Bon cadeau PDF</span><span>Inclus</span></div>
+    ${S.prestige ? '<div class="recap-row"><span>Bon cadeau physique</span><span>Inclus</span></div>' : ''}
+    <div class="recap-row"><span>Total</span><span>${prix.toFixed(2)} €</span></div>
+  `;
+}
+
+function genCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'SCELLE-';
+  for (let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  code += '-';
+  for (let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+async function payer() {
+  const btn = document.getElementById('btn-pay');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Traitement...';
+  document.getElementById('card-error').textContent = '';
+  S.petitMot = document.getElementById('petit-mot').value.trim();
+
+  try {
+    const { paymentMethod, error: strErr } = await stripe.createPaymentMethod({
+      type:'card', card,
+      billing_details:{ name:S.acheteurNom, email:S.acheteurEmail }
+    });
+    if (strErr) throw new Error(strErr.message);
+
+    const code = genCode();
+    const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+    const { error: sbErr } = await sb.from('codes_cadeaux').insert([{
+      code,
+      acheteur_nom: S.acheteurNom,
+      acheteur_email: S.acheteurEmail,
+      offre: S.offre,
+      prestige: S.prestige,
+      petit_mot: S.petitMot,
+      prix: PRIX[S.offre] + (S.prestige ? 5 : 0),
+      statut: 'disponible',
+      created_at: new Date().toISOString()
+    }]);
+    if (sbErr) throw new Error('Erreur : ' + sbErr.message);
+
+    document.getElementById('code-affiche').textContent = code;
+    document.getElementById('prestige-badge-wrap').innerHTML = S.prestige
+      ? '<div class="prestige-badge">✓ Édition Prestige incluse</div>'
+      : '';
+    document.getElementById('success-note').textContent = S.prestige
+      ? 'Le code cadeau et le bon cadeau PDF ont été envoyés à votre email. Le bon cadeau physique sera glissé dans l\'enveloppe le jour de l\'envoi.'
+      : 'Le code cadeau et le bon cadeau PDF ont été envoyés à votre email. Offrez ce code au destinataire pour qu\'il écrive sa lettre sur Scellé.';
+
+    aller(4);
+  } catch(err) {
+    document.getElementById('card-error').textContent = err.message;
+    btn.disabled = false;
+    btn.textContent = 'Offrir cette lettre →';
+  }
+}
+
+card.on('change', e => {
+  document.getElementById('card-error').textContent = e.error ? e.error.message : '';
+});
+</script>
+</body>
+</html>
