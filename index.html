@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scellé — Lettres du futur</title>
+  <meta name="description" content="Écris une lettre aujourd'hui. Reçois-la dans 1, 3 ou 5 ans. Une vraie lettre papier, conservée avec soin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --ink:#1a1714;
+      --cream:#f5f0e8;
+      --warm:#e8dfc8;
+      --accent:#8b6f47;
+      --muted:#9e9589;
+      --paper:#faf7f2;
+      --border:rgba(26,23,20,0.12);
+    }
+    html{scroll-behavior:smooth;}
+    body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;line-height:1.6;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:18px 40px;background:rgba(245,240,232,0.95);backdrop-filter:blur(8px);border-bottom:0.5px solid var(--border);}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;letter-spacing:6px;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+    .nav-links{display:flex;gap:32px;align-items:center;}
+    .nav-links a{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+    .nav-links a:hover{color:var(--ink);}
+    .nav-cta{padding:9px 24px;background:var(--ink);color:var(--cream) !important;letter-spacing:1px;}
+
+    /* HERO */
+    .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(139,111,71,0.08) 0%,transparent 65%);}
+    .hero-eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.2s forwards;}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,80px);font-weight:300;line-height:1.1;color:var(--ink);margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.4s forwards;}
+    .hero-title em{font-style:italic;color:var(--accent);}
+    .hero-sub{font-size:15px;color:var(--muted);line-height:1.8;max-width:460px;margin-bottom:40px;opacity:0;animation:fadeUp 0.8s 0.6s forwards;}
+    .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s 0.8s forwards;}
+    .btn-primary{padding:14px 36px;background:var(--ink);color:var(--cream);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;}
+    .btn-primary:hover{background:var(--accent);}
+    .btn-ghost{padding:14px 36px;background:transparent;color:var(--ink);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:0.5px solid rgba(26,23,20,0.3);cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s;}
+    .btn-ghost:hover{border-color:var(--ink);}
+    .hero-scroll{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);opacity:0;animation:fadeUp 0.8s 1.2s forwards;}
+
+    /* OFFRES */
+    .offers-section{padding:80px 40px;background:var(--paper);}
+    .section-eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:12px;}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;text-align:center;margin-bottom:48px;color:var(--ink);}
+    .offers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);max-width:900px;margin:0 auto;}
+    .offer{background:var(--paper);padding:36px 28px;text-align:center;transition:background 0.2s;}
+    .offer:hover{background:var(--cream);}
+    .offer.featured{background:var(--ink);}
+    .offer.featured:hover{background:#2a2520;}
+    .offer-icon{font-size:20px;color:var(--accent);margin-bottom:20px;}
+    .offer.featured .offer-icon{color:rgba(245,240,232,0.6);}
+    .offer-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .offer.featured .offer-tag{color:rgba(245,240,232,0.45);}
+    .offer-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--ink);margin-bottom:6px;}
+    .offer.featured .offer-name{color:var(--cream);}
+    .offer-delay{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+    .offer.featured .offer-delay{color:rgba(245,240,232,0.45);}
+    .offer-price{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--ink);margin-bottom:4px;}
+    .offer.featured .offer-price{color:var(--cream);}
+    .offer-price sup{font-size:18px;vertical-align:super;}
+    .offer-price sub{font-size:13px;color:var(--muted);}
+    .offer.featured .offer-price sub{color:rgba(245,240,232,0.45);}
+    .offer-desc{font-size:13px;color:var(--muted);line-height:1.7;margin:12px 0 24px;}
+    .offer.featured .offer-desc{color:rgba(245,240,232,0.55);}
+    .offer-btn{width:100%;padding:12px;background:transparent;border:0.5px solid rgba(26,23,20,0.2);font-family:'Jost',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;color:var(--ink);transition:all 0.2s;text-decoration:none;display:block;}
+    .offer-btn:hover{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+    .offer.featured .offer-btn{border-color:rgba(245,240,232,0.25);color:var(--cream);}
+    .offer.featured .offer-btn:hover{background:var(--accent);border-color:var(--accent);}
+
+    /* COMMENT ÇA MARCHE */
+    .how-section{padding:80px 40px;background:var(--cream);}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;max-width:900px;margin:0 auto;}
+    .step{text-align:center;}
+    .step-num{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:rgba(139,111,71,0.2);margin-bottom:12px;line-height:1;}
+    .step-title{font-size:13px;font-weight:400;letter-spacing:1px;text-transform:uppercase;color:var(--ink);margin-bottom:8px;}
+    .step-desc{font-size:13px;color:var(--muted);line-height:1.7;}
+
+    /* PROMESSE */
+    .promise{background:var(--warm);padding:28px 40px;display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap;}
+    .promise-item{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:1px;color:var(--ink);}
+    .promise-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+
+    /* TÉMOIGNAGE */
+    .testimonial{padding:80px 40px;text-align:center;background:var(--paper);}
+    .quote-mark{font-family:'Cormorant Garamond',serif;font-size:80px;color:rgba(139,111,71,0.15);line-height:0.5;margin-bottom:24px;}
+    .quote{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,2.5vw,26px);font-style:italic;font-weight:300;color:var(--ink);max-width:600px;margin:0 auto 20px;line-height:1.6;}
+    .quote-author{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+
+    /* CTA FINAL */
+    .cta-section{padding:80px 40px;text-align:center;background:var(--ink);}
+    .cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);font-weight:300;color:var(--cream);margin-bottom:16px;}
+    .cta-sub{font-size:14px;color:rgba(245,240,232,0.55);margin-bottom:36px;}
+    .btn-cream{padding:14px 36px;background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;display:inline-block;transition:background 0.2s;}
+    .btn-cream:hover{background:var(--warm);}
+
+    /* FOOTER */
+    footer{padding:24px 40px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--border);background:var(--cream);flex-wrap:wrap;gap:12px;}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
+    .footer-links{display:flex;gap:24px;}
+    .footer-links a{font-size:11px;letter-spacing:1px;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+    .footer-links a:hover{color:var(--ink);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+    @media(max-width:768px){
+      nav{padding:16px 20px;}
+      .nav-links a:not(.nav-cta){display:none;}
+      .hero{padding:100px 24px 60px;}
+      .offers-grid{grid-template-columns:1fr;}
+      .steps{grid-template-columns:repeat(2,1fr);}
+      .promise{gap:24px;}
+      footer{flex-direction:column;text-align:center;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Scellé</a>
+  <div class="nav-links">
+    <a href="#comment">Comment ça marche</a>
+    <a href="#offres">Offres</a>
+    <a href="ecrire.html" class="nav-cta">Écrire ma lettre</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="hero-eyebrow">Lettres du futur · Envoi physique</p>
+  <h1 class="hero-title">Écris à ton<br><em>futur toi</em></h1>
+  <p class="hero-sub">Une vraie lettre papier, conservée avec soin, expédiée à la date que tu choisis. Dans 1, 3 ou 5 ans.</p>
+  <div class="hero-actions">
+    <a href="ecrire.html" class="btn-primary">Écrire ma lettre</a>
+    <a href="ecrire.html?offrir=1" class="btn-ghost">Offrir une lettre</a>
+  </div>
+  <span class="hero-scroll">↓ Découvrir</span>
+</section>
+
+<section class="offers-section" id="offres">
+  <p class="section-eyebrow">Nos offres</p>
+  <h2 class="section-title">Choisir ton délai</h2>
+  <div class="offers-grid">
+    <div class="offer">
+      <div class="offer-icon">✉</div>
+      <p class="offer-tag">Idéal pour commencer</p>
+      <p class="offer-name">Lettre simple</p>
+      <p class="offer-delay">Envoi dans 1 an</p>
+      <p class="offer-price"><sup>€</sup>14<sub>,90</sub></p>
+      <p class="offer-desc">Papier premium, enveloppe cachetée, expédiée à la date choisie.</p>
+      <a href="ecrire.html?offre=simple" class="offer-btn">Choisir cette offre</a>
+    </div>
+    <div class="offer featured">
+      <div class="offer-icon">⧗</div>
+      <p class="offer-tag">Le plus populaire</p>
+      <p class="offer-name">Lettre longue durée</p>
+      <p class="offer-delay">Envoi dans 3 ou 5 ans</p>
+      <p class="offer-price"><sup>€</sup>19<sub>,90</sub></p>
+      <p class="offer-desc">Pour les grands moments de vie. Tout inclus, conservée précieusement.</p>
+      <a href="ecrire.html?offre=longue" class="offer-btn">Choisir cette offre</a>
+    </div>
+    <div class="offer">
+      <div class="offer-icon">♡</div>
+      <p class="offer-tag">Grands moments</p>
+      <p class="offer-name">Lettre 10 ans</p>
+      <p class="offer-delay">Envoi dans 10 ans</p>
+      <p class="offer-price"><sup>€</sup>29<sub>,90</sub></p>
+      <p class="offer-desc">Pour les jalons de vie importants. Une lettre qui traversera une décennie.</p>
+      <a href="ecrire.html?offre=grands" class="offer-btn">Choisir cette offre</a>
+    </div>
+  </div>
+</section>
+
+<section class="how-section" id="comment">
+  <p class="section-eyebrow">Le processus</p>
+  <h2 class="section-title">Simple comme écrire une lettre</h2>
+  <div class="steps">
+    <div class="step">
+      <p class="step-num">01</p>
+      <p class="step-title">Tu écris</p>
+      <p class="step-desc">Sur notre site, dans un éditeur pensé pour l'écriture libre et sincère.</p>
+    </div>
+    <div class="step">
+      <p class="step-num">02</p>
+      <p class="step-title">Tu choisis</p>
+      <p class="step-desc">Dans 1, 3 ou 5 ans. Ou une date précise — un anniversaire, une remise de diplôme.</p>
+    </div>
+    <div class="step">
+      <p class="step-num">03</p>
+      <p class="step-title">On conserve</p>
+      <p class="step-desc">Ta lettre est imprimée, mise sous enveloppe et gardée précieusement jusqu'au jour J.</p>
+    </div>
+    <div class="step">
+      <p class="step-num">04</p>
+      <p class="step-title">Elle arrive</p>
+      <p class="step-desc">Le jour choisi, tu reçois ta lettre dans ta boîte aux lettres. Comme par magie.</p>
+    </div>
+  </div>
+</section>
+
+<div class="promise">
+  <div class="promise-item"><span class="promise-dot"></span>Papier premium recyclé</div>
+  <div class="promise-item"><span class="promise-dot"></span>Jamais relue, jamais partagée</div>
+  <div class="promise-item"><span class="promise-dot"></span>Expédiée depuis la France</div>
+  <div class="promise-item"><span class="promise-dot"></span>Paiement sécurisé par Stripe</div>
+</div>
+
+<section class="testimonial">
+  <div class="quote-mark">"</div>
+  <p class="quote">Je l'ai reçue un matin ordinaire. J'ai pleuré pendant vingt minutes. C'était exactement ce dont j'avais besoin.</p>
+  <p class="quote-author">— Marie, 34 ans · Lettre reçue 3 ans après l'avoir écrite</p>
+</section>
+
+<section class="cta-section">
+  <h2 class="cta-title">Prêt à écrire ?</h2>
+  <p class="cta-sub">Ta lettre t'attend. Il ne reste qu'à commencer.</p>
+  <a href="ecrire.html" class="btn-cream">Écrire ma lettre maintenant</a>
+</section>
+
+<footer>
+  <span class="footer-logo">Scellé</span>
+  <div class="footer-links">
+    <a href="mentions.html">Mentions légales</a>
+    <a href="cgv.html">CGV</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="mailto:contact@scelle.fr">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
