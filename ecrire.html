@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Écrire ma lettre — Scellé</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&family=Caveat:wght@400&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--ink:#1a1714;--cream:#f5f0e8;--warm:#e8dfc8;--accent:#8b6f47;--muted:#9e9589;--paper:#faf7f2;--border:rgba(26,23,20,0.15);}
+    body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;min-height:100vh;}
+
+    nav{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:0.5px solid var(--border);background:var(--cream);position:sticky;top:0;z-index:10;}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:20px;letter-spacing:6px;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+    .nav-step{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+
+    /* PROGRESS */
+    .progress{display:flex;background:var(--warm);}
+    .prog-step{flex:1;padding:12px 8px;text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.3s;}
+    .prog-step.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .prog-step.done{color:var(--accent);}
+
+    /* PAGES */
+    .page{display:none;padding:40px;max-width:660px;margin:0 auto;}
+    .page.active{display:block;animation:fadeIn 0.35s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+    .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:6px;color:var(--ink);}
+    .page-sub{font-size:13px;color:var(--muted);margin-bottom:32px;line-height:1.7;}
+
+    /* CHAMPS */
+    .field{margin-bottom:22px;}
+    .field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .field input,.field select,.field textarea{width:100%;padding:12px 16px;background:var(--paper);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);outline:none;transition:border-color 0.2s;border-radius:0;-webkit-appearance:none;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+    .field textarea{min-height:240px;resize:vertical;line-height:1.9;}
+    .char-count{text-align:right;font-size:11px;margin-top:5px;}
+    .char-ok{color:var(--muted);}
+    .char-warn{color:#c0392b;}
+
+    /* DATE OPTIONS */
+    .date-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px;}
+    .date-opt{border:0.5px solid var(--border);padding:16px 6px;text-align:center;cursor:pointer;background:var(--paper);transition:all 0.2s;}
+    .date-opt:hover{border-color:var(--accent);}
+    .date-opt.sel{border:1.5px solid var(--accent);background:var(--cream);}
+    .date-opt .yr{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--ink);}
+    .date-opt .lb{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+    .date-opt.sel .lb{color:var(--accent);}
+
+    /* TEMPLATE */
+    .tpl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+    .tpl-card{border:0.5px solid var(--border);padding:14px 10px;cursor:pointer;text-align:center;transition:all 0.2s;background:var(--paper);}
+    .tpl-card:hover{border-color:var(--accent);}
+    .tpl-card.sel{border:1.5px solid var(--accent);background:var(--cream);}
+    .tpl-preview{height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;}
+    .tpl-preview.minimal{font-family:'Jost',sans-serif;letter-spacing:3px;font-size:10px;color:var(--muted);}
+    .tpl-preview.handwritten{font-family:'Caveat',cursive;font-size:18px;color:var(--ink);}
+    .tpl-preview.vintage{border:0.5px solid var(--border);width:100%;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--accent);}
+    .tpl-name{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+    .tpl-card.sel .tpl-name{color:var(--accent);}
+
+    /* GRID ADRESSE */
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+    /* RECAP */
+    .recap{background:var(--paper);border:0.5px solid var(--border);padding:24px;margin-bottom:20px;}
+    .recap-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:13px;}
+    .recap-row:last-child{border:none;font-size:15px;font-weight:400;padding-top:14px;}
+    .recap-row span:first-child{color:var(--muted);}
+
+    /* STRIPE */
+    .secure-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:20px;}
+    #card-element{padding:14px 16px;background:var(--paper);border:0.5px solid var(--border);}
+    #card-element.StripeElement--focus{border-color:var(--accent);}
+    #card-error{color:#c0392b;font-size:12px;margin-top:6px;min-height:18px;}
+
+    /* BOUTONS */
+    .actions{display:flex;gap:12px;margin-top:32px;}
+    .btn-next{flex:1;padding:14px;background:var(--ink);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
+    .btn-next:hover:not(:disabled){background:var(--accent);}
+    .btn-next:disabled{background:var(--muted);cursor:not-allowed;}
+    .btn-back{padding:14px 20px;background:transparent;color:var(--muted);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+    .btn-back:hover{color:var(--ink);border-color:var(--ink);}
+
+    /* SUCCÈS */
+    .success-wrap{text-align:center;padding:60px 32px;}
+    .success-icon{font-size:52px;margin-bottom:24px;}
+    .success-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;margin-bottom:14px;}
+    .success-sub{font-size:14px;color:var(--muted);line-height:1.9;max-width:420px;margin:0 auto 20px;}
+    .success-date{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:var(--accent);margin-bottom:36px;}
+    .btn-home{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:2px;}
+
+    /* OPTION PRESTIGE */
+    .prestige-option{border:0.5px solid var(--border);padding:16px 20px;background:var(--paper);cursor:pointer;transition:all 0.2s;display:flex;align-items:flex-start;gap:14px;margin-top:8px;}
+    .prestige-option:hover{border-color:var(--accent);}
+    .prestige-option.sel{border:1.5px solid var(--accent);background:var(--cream);}
+    .prestige-checkbox{width:18px;height:18px;border:0.5px solid var(--border);background:var(--paper);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all 0.2s;}
+    .prestige-option.sel .prestige-checkbox{background:var(--accent);border-color:var(--accent);}
+    .prestige-check{color:var(--cream);font-size:12px;display:none;}
+    .prestige-option.sel .prestige-check{display:block;}
+    .prestige-info{flex:1;}
+    .prestige-title{font-size:13px;font-weight:400;color:var(--ink);margin-bottom:3px;}
+    .prestige-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+    .prestige-prix{font-size:13px;color:var(--accent);font-weight:400;white-space:nowrap;}
+
+    /* SPINNER */
+    .spinner{display:inline-block;width:14px;height:14px;border:1.5px solid rgba(245,240,232,0.3);border-top-color:var(--cream);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    @media(max-width:600px){
+      nav{padding:14px 20px;}
+      .page{padding:24px 20px;}
+      .date-grid{grid-template-columns:repeat(2,1fr);}
+      .tpl-grid{grid-template-columns:1fr;}
+      .grid2{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Scellé</a>
+  <span class="nav-step" id="nav-step">Étape 1 sur 4</span>
+</nav>
+
+<div class="progress">
+  <div class="prog-step active" id="ps1">Rédaction</div>
+  <div class="prog-step" id="ps2">Date & style</div>
+  <div class="prog-step" id="ps3">Adresse</div>
+  <div class="prog-step" id="ps4">Paiement</div>
+</div>
+
+<!-- ÉTAPE 1 -->
+<div class="page active" id="p1">
+  <p class="eyebrow">Ta lettre</p>
+  <h1 class="page-title">Écris librement</h1>
+  <p class="page-sub">Personne ne lira cette lettre avant toi. Écris sans filtre, sans jugement.</p>
+  <div class="field">
+    <label>Ta lettre</label>
+    <textarea id="lettre" placeholder="Cher moi du futur,&#10;&#10;Aujourd'hui je pense à..."></textarea>
+    <div class="char-count char-ok"><span id="chars">0</span> / 3000 caractères</div>
+  </div>
+  <div class="actions">
+    <button class="btn-next" id="btn1" onclick="aller(2)">Continuer — Date & style →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 2 -->
+<div class="page" id="p2">
+  <p class="eyebrow">Date & style</p>
+  <h1 class="page-title">Quand veux-tu la recevoir ?</h1>
+  <p class="page-sub">Ta lettre sera conservée jusqu'à cette date, puis expédiée dans ta boîte aux lettres.</p>
+
+  <div class="field">
+    <label>Délai d'envoi</label>
+    <div class="date-grid">
+      <div class="date-opt sel" id="d1" onclick="choixDate(this,'1 an','simple')">
+        <div class="yr">1</div><div class="lb">an</div>
+      </div>
+      <div class="date-opt" id="d3" onclick="choixDate(this,'3 ans','longue')">
+        <div class="yr">3</div><div class="lb">ans</div>
+      </div>
+      <div class="date-opt" id="d5" onclick="choixDate(this,'5 ans','longue')">
+        <div class="yr">5</div><div class="lb">ans</div>
+      </div>
+      <div class="date-opt" id="d10" onclick="choixDate(this,'10 ans','grands')">
+        <div class="yr">10</div><div class="lb">ans</div>
+      </div>
+    </div>
+    <div id="date-custom" style="display:none;margin-top:8px;">
+      <input type="date" id="date-val" style="width:100%;padding:12px 16px;background:var(--paper);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:14px;color:var(--ink);outline:none;border-radius:0;">
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:28px;">
+    <label>Style de la lettre</label>
+    <div class="tpl-grid">
+      <div class="tpl-card sel" onclick="choixTpl(this,'minimal')">
+        <div class="tpl-preview minimal">— Scellé —</div>
+        <div class="tpl-name">Minimaliste</div>
+      </div>
+      <div class="tpl-card" onclick="choixTpl(this,'handwritten')">
+        <div class="tpl-preview handwritten">Cher moi...</div>
+        <div class="tpl-name">Manuscrit</div>
+      </div>
+      <div class="tpl-card" onclick="choixTpl(this,'vintage')">
+        <div class="tpl-preview vintage">Scellé</div>
+        <div class="tpl-name">Vintage</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field" style="margin-top:28px;">
+    <label>Option Édition Prestige</label>
+    <div class="prestige-option" id="prestige-opt" onclick="togglePrestige()">
+      <div class="prestige-checkbox"><span class="prestige-check">✓</span></div>
+      <div class="prestige-info">
+        <p class="prestige-title">Édition Prestige — Emballage premium</p>
+        <p class="prestige-desc">Enveloppe vergé ivoire · Cachet de cire bordeaux · Carte "De la part de..." · Ruban raphia</p>
+      </div>
+      <span class="prestige-prix">+5,00 €</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-back" onclick="aller(1)">← Retour</button>
+    <button class="btn-next" onclick="aller(3)">Continuer — Adresse →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 3 -->
+<div class="page" id="p3">
+  <p class="eyebrow">Adresse d'envoi</p>
+  <h1 class="page-title">Où envoyer ta lettre ?</h1>
+  <p class="page-sub">L'adresse à laquelle tu veux recevoir ta lettre dans le futur.</p>
+
+  <div class="field">
+    <label>Prénom et nom *</label>
+    <input type="text" id="nom" placeholder="Marie Dupont">
+  </div>
+  <div class="grid2">
+    <div class="field">
+      <label>Adresse *</label>
+      <input type="text" id="adresse" placeholder="12 rue des Lilas">
+    </div>
+    <div class="field">
+      <label>Complément</label>
+      <input type="text" id="complement" placeholder="Apt 3B (optionnel)">
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="field">
+      <label>Code postal *</label>
+      <input type="text" id="cp" placeholder="75001">
+    </div>
+    <div class="field">
+      <label>Ville *</label>
+      <input type="text" id="ville" placeholder="Paris">
+    </div>
+  </div>
+  <div class="field">
+    <label>Pays</label>
+    <select id="pays">
+      <option>France</option>
+      <option>Belgique</option>
+      <option>Suisse</option>
+      <option>Luxembourg</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Email de confirmation *</label>
+    <input type="email" id="email" placeholder="marie@email.com">
+  </div>
+
+  <div class="actions">
+    <button class="btn-back" onclick="aller(2)">← Retour</button>
+    <button class="btn-next" onclick="aller(4)">Continuer — Paiement →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 4 -->
+<div class="page" id="p4">
+  <p class="eyebrow">Paiement</p>
+  <h1 class="page-title">Dernière étape</h1>
+  <p class="page-sub">Ta lettre sera conservée et expédiée à la date choisie.</p>
+
+  <div class="recap" id="recap"></div>
+
+  <p class="secure-note">🔒 Paiement sécurisé par Stripe — aucune donnée bancaire stockée</p>
+
+  <div class="field">
+    <label>Carte bancaire</label>
+    <div id="card-element"></div>
+    <div id="card-error"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn-back" onclick="aller(3)">← Retour</button>
+    <button class="btn-next" id="btn-pay" onclick="payer()">Sceller ma lettre →</button>
+  </div>
+</div>
+
+<!-- SUCCÈS -->
+<div class="page" id="p5">
+  <div class="success-wrap">
+    <div class="success-icon">✉️</div>
+    <h2 class="success-title">Ta lettre est scellée</h2>
+    <p class="success-sub">Elle sera conservée précieusement et expédiée à la date choisie. Un email de confirmation vient de t'être envoyé.</p>
+    <p class="success-date" id="success-date"></p>
+    <a href="index.html" class="btn-home">Retour à l'accueil</a>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────
+const SUPA_URL  = 'https://syinrjjnyemvfpyqorfu.supabase.co';
+const SUPA_KEY  = 'sb_publishable_mu25XGiq_gxJWdX9Lb6X1g_cjfisyq9';
+const STRIPE_PK = 'pk_test_51TgT1jDy9uyBH7ngM1oNP1tjLXJh8GEhv2Uf0Fe1XTJjTlIZ3CkSxScCQ3fGU9mRWB9gcMDGqlGYDLHDMmtMPUmS00Hu77otlB';
+const MAX_CHARS = 3000;
+const PRIX = { simple: 14.90, longue: 19.90, grands: 29.90 };
+const OFFRE_LABEL = { simple: 'Lettre simple (1 an)', longue: 'Lettre longue durée (3 ou 5 ans)', grands: 'Grands moments (10 ans)' };
+
+// ── STATE ────────────────────────────────────────────────────────────
+const S = { step:1, lettre:'', delai:'1 an', offre:'simple', tpl:'minimal', prestige:false, nom:'', adresse:'', complement:'', cp:'', ville:'', pays:'France', email:'' };
+
+// ── STRIPE ──────────────────────────────────────────────────────────
+const stripe = Stripe(STRIPE_PK);
+const elements = stripe.elements();
+const card = elements.create('card',{style:{base:{fontFamily:'Jost,sans-serif',fontSize:'14px',color:'#1a1714','::placeholder':{color:'#9e9589'}}}});
+let cardMounted = false;
+
+// ── NAVIGATION ──────────────────────────────────────────────────────
+function aller(n) {
+  if (n > S.step) {
+    if (S.step === 1 && !valEtape1()) return;
+    if (S.step === 3 && !valEtape3()) return;
+  }
+  document.getElementById('p'+S.step).classList.remove('active');
+  const ps = document.getElementById('ps'+S.step);
+  if (ps) { ps.classList.remove('active'); if (n > S.step) ps.classList.add('done'); }
+  S.step = n;
+  document.getElementById('p'+n).classList.add('active');
+  const psn = document.getElementById('ps'+n);
+  if (psn) psn.classList.add('active');
+  document.getElementById('nav-step').textContent = n <= 4 ? 'Étape '+n+' sur 4' : 'Confirmé ✓';
+  if (n === 4) { afficherRecap(); if (!cardMounted) { card.mount('#card-element'); cardMounted = true; } }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── VALIDATION ──────────────────────────────────────────────────────
+function valEtape1() {
+  const txt = document.getElementById('lettre').value.trim();
+  if (txt.length < 20) { alert('Écris au moins quelques phrases dans ta lettre 😊'); return false; }
+  if (txt.length > MAX_CHARS) { alert('Ta lettre dépasse la limite de '+MAX_CHARS+' caractères.'); return false; }
+  S.lettre = txt;
+  return true;
+}
+
+function valEtape3() {
+  const champs = ['nom','adresse','cp','ville','email'];
+  for (const c of champs) {
+    if (!document.getElementById(c).value.trim()) { alert('Merci de remplir tous les champs obligatoires (*)'); return false; }
+  }
+  if (!document.getElementById('email').value.includes('@')) { alert('Adresse email invalide.'); return false; }
+  S.nom = document.getElementById('nom').value.trim();
+  S.adresse = document.getElementById('adresse').value.trim();
+  S.complement = document.getElementById('complement').value.trim();
+  S.cp = document.getElementById('cp').value.trim();
+  S.ville = document.getElementById('ville').value.trim();
+  S.pays = document.getElementById('pays').value;
+  S.email = document.getElementById('email').value.trim();
+  return true;
+}
+
+// ── SÉLECTIONS ──────────────────────────────────────────────────────
+function choixDate(el, delai, offre) {
+  document.querySelectorAll('.date-opt').forEach(d => d.classList.remove('sel'));
+  el.classList.add('sel');
+  S.delai = delai; S.offre = offre;
+  document.getElementById('date-custom').style.display = delai === 'précise' ? 'block' : 'none';
+  if (delai === 'précise') {
+    const min = new Date(); min.setMonth(min.getMonth()+6);
+    document.getElementById('date-val').min = min.toISOString().split('T')[0];
+  }
+}
+
+function choixTpl(el, tpl) {
+  document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  S.tpl = tpl;
+}
+
+function togglePrestige() {
+  S.prestige = !S.prestige;
+  document.getElementById('prestige-opt').classList.toggle('sel', S.prestige);
+}
+
+// ── RECAP ────────────────────────────────────────────────────────────
+function afficherRecap() {
+  const prix = (PRIX[S.offre] || 14.90) + (S.prestige ? 5 : 0);
+  document.getElementById('recap').innerHTML = `
+    <div class="recap-row"><span>Offre</span><span>${OFFRE_LABEL[S.offre]||'Lettre simple'}</span></div>
+    <div class="recap-row"><span>Délai</span><span>${S.delai}</span></div>
+    <div class="recap-row"><span>Style</span><span>${S.tpl==='minimal'?'Minimaliste':S.tpl==='handwritten'?'Manuscrit':'Vintage'}</span></div>
+    ${S.prestige ? '<div class="recap-row"><span>Édition Prestige</span><span>+5,00 €</span></div>' : ''}
+    <div class="recap-row"><span>Expédition France</span><span>Inclus</span></div>
+    <div class="recap-row"><span>Total</span><span>${prix.toFixed(2)} €</span></div>
+  `;
+}
+
+// ── PAIEMENT ────────────────────────────────────────────────────────
+async function payer() {
+  const btn = document.getElementById('btn-pay');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Traitement...';
+  document.getElementById('card-error').textContent = '';
+
+  try {
+    // Calcul date envoi
+    let dateEnvoi = new Date();
+    if (S.delai === '1 an') dateEnvoi.setFullYear(dateEnvoi.getFullYear()+1);
+    else if (S.delai === '3 ans') dateEnvoi.setFullYear(dateEnvoi.getFullYear()+3);
+    else if (S.delai === '5 ans') dateEnvoi.setFullYear(dateEnvoi.getFullYear()+5);
+    else if (S.delai === '10 ans') dateEnvoi.setFullYear(dateEnvoi.getFullYear()+10);
+    else { const v = document.getElementById('date-val').value; if (v) dateEnvoi = new Date(v); }
+
+    // Sauvegarde Supabase
+    const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+    const { error: sbErr } = await sb.from('lettres').insert([{
+      nom: S.nom, email: S.email, adresse: S.adresse, complement: S.complement,
+      code_postal: S.cp, ville: S.ville, pays: S.pays, contenu: S.lettre,
+      template: S.tpl, offre: S.offre, delai: S.delai,
+      date_envoi: dateEnvoi.toISOString().split('T')[0],
+      prix: (PRIX[S.offre]||14.90) + (S.prestige ? 5 : 0), prestige: S.prestige, statut: 'en_attente'
+    }]);
+    if (sbErr) throw new Error('Erreur sauvegarde : '+sbErr.message);
+
+    // Stripe payment method
+    const { paymentMethod, error: strErr } = await stripe.createPaymentMethod({
+      type: 'card', card,
+      billing_details: { name: S.nom, email: S.email }
+    });
+    if (strErr) throw new Error(strErr.message);
+
+    // Succès
+    const dateStr = dateEnvoi.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+    document.getElementById('success-date').textContent = 'Expédiée le ' + dateStr;
+    aller(5);
+
+  } catch(err) {
+    document.getElementById('card-error').textContent = err.message || 'Une erreur est survenue. Réessaie.';
+    btn.disabled = false;
+    btn.textContent = 'Sceller ma lettre →';
+  }
+}
+
+// ── COMPTEUR ────────────────────────────────────────────────────────
+document.getElementById('lettre').addEventListener('input', function() {
+  const n = this.value.length;
+  const el = document.getElementById('chars');
+  el.textContent = n;
+  el.parentElement.className = 'char-count ' + (n > MAX_CHARS ? 'char-warn' : 'char-ok');
+});
+
+// ── ERREURS STRIPE ──────────────────────────────────────────────────
+card.on('change', e => {
+  document.getElementById('card-error').textContent = e.error ? e.error.message : '';
+});
+</script>
+</body>
+</html>
