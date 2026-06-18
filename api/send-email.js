@@ -77,6 +77,21 @@ export default async function handler(req, res) {
           <p style="text-align:center;color:#9e9589;font-size:11px;letter-spacing:3px;margin-top:32px;">S C E L L É · Lettres du futur</p>
         </div>`
       };
+    } else if (type === 'contact') {
+      const { nom, email, sujet, message } = data;
+      emailPayload = {
+        from: FROM,
+        to: [ADMIN],
+        subject: `📩 Contact — ${sujet} — ${nom}`,
+        html: `<div style="font-family:Georgia,serif;max-width:560px;">
+          <p><strong>Nouveau message de contact</strong></p>
+          <p><strong>Nom :</strong> ${nom}</p>
+          <p><strong>Email :</strong> ${email}</p>
+          <p><strong>Sujet :</strong> ${sujet}</p>
+          <p><strong>Message :</strong></p>
+          <p style="background:#f5f0e8;padding:16px;">${message.replace(/\n/g,'<br>')}</p>
+        </div>`
+      };
     } else {
       return res.status(400).json({ error: 'Type inconnu' });
     }
