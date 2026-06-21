@@ -195,6 +195,18 @@ export default async function handler(req, res) {
     </table>
 
     <p style="margin:0 0 8px;font-size:13px;color:#9e9589;line-height:1.8;font-family:Georgia,serif;">Le destinataire utilise ce code directement sur <a href="https://scellé.fr" style="color:#8b6f47;text-decoration:none;">scellé.fr</a> lors de son écriture.</p>
+
+    <!-- INSTRUCTIONS -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;margin-top:24px;">
+      <tr><td style="border-top:0.5px solid rgba(26,23,20,0.08);padding-top:24px;">
+        <p style="margin:0 0 12px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#9e9589;font-family:Georgia,serif;">Comment utiliser ce code</p>
+        <p style="margin:0 0 6px;font-size:13px;color:#1a1714;font-family:Georgia,serif;">1. Rendez-vous sur <a href="https://scellé.fr" style="color:#8b6f47;text-decoration:none;">scellé.fr</a></p>
+        <p style="margin:0 0 6px;font-size:13px;color:#1a1714;font-family:Georgia,serif;">2. Rédigez librement votre lettre du futur</p>
+        <p style="margin:0 0 6px;font-size:13px;color:#1a1714;font-family:Georgia,serif;">3. Entrez le code au moment du paiement</p>
+        <p style="margin:0;font-size:13px;color:#1a1714;font-family:Georgia,serif;">4. Choisissez votre date — la lettre sera envoyée à l'heure dite</p>
+      </td></tr>
+    </table>
+
     <p style="margin:0;font-size:13px;color:#9e9589;line-height:1.8;font-family:Georgia,serif;">Pour toute question : <a href="mailto:contact@scellé.fr" style="color:#8b6f47;text-decoration:none;">contact@scellé.fr</a></p>
   </td></tr>
 
