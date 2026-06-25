@@ -164,7 +164,7 @@
 <div class="page" id="p2">
   <p class="eyebrow">Vos coordonnées</p>
   <h1 class="page-title">Qui offre ce cadeau ?</h1>
-  <p class="page-sub">Nous vous enverrons le code cadeau et le bon cadeau PDF à votre adresse email.</p>
+  <p class="page-sub">Nous vous enverrons le code cadeau à votre adresse email.</p>
 
   <div class="grid2">
     <div class="field">
@@ -177,12 +177,29 @@
     </div>
   </div>
 
+  <div id="adresse-prestige-wrap" style="display:none;">
+    <p style="font-size:12px;color:var(--accent);margin-bottom:16px;letter-spacing:1px;">📦 Édition Prestige — nous vous enverrons le bon cadeau physique à cette adresse (3-5 jours ouvrés)</p>
+    <div class="field">
+      <label>Adresse *</label>
+      <input type="text" id="adresse-ligne1" placeholder="12 rue des Lilas">
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Code postal *</label>
+        <input type="text" id="adresse-cp" placeholder="75001">
+      </div>
+      <div class="field">
+        <label>Ville *</label>
+        <input type="text" id="adresse-ville" placeholder="Paris">
+      </div>
+    </div>
+  </div>
+
   <div class="actions">
     <button class="btn-back" onclick="aller(1)">← Retour</button>
     <button class="btn-next" onclick="aller(3)">Continuer — Paiement →</button>
   </div>
 </div>
-
 <!-- ÉTAPE 3 : PAIEMENT -->
 <div class="page" id="p3">
   <p class="eyebrow">Paiement</p>
