@@ -339,6 +339,7 @@ async function payer() {
       prestige: S.prestige,
       petit_mot: S.petitMot,
       prix: montant,
+      adresse: S.adresse ? `${S.adresse.ligne1}, ${S.adresse.cp} ${S.adresse.ville}` : null,
       statut: 'disponible',
       created_at: new Date().toISOString()
     }]);
