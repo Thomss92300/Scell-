@@ -14,27 +14,21 @@
     nav{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;border-bottom:0.5px solid var(--border);background:var(--cream);position:sticky;top:0;z-index:10;}
     .logo{font-family:'Cormorant Garamond',serif;font-size:20px;letter-spacing:6px;text-transform:uppercase;color:var(--ink);text-decoration:none;}
     .nav-step{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-
     .progress{display:flex;background:var(--warm);}
     .prog-step{flex:1;padding:12px 8px;text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.3s;}
     .prog-step.active{color:var(--ink);border-bottom-color:var(--accent);}
     .prog-step.done{color:var(--accent);}
-
     .page{display:none;padding:40px;max-width:660px;margin:0 auto;}
     .page.active{display:block;animation:fadeIn 0.35s ease;}
     @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-
     .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;}
     .page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;margin-bottom:6px;color:var(--ink);}
     .page-sub{font-size:13px;color:var(--muted);margin-bottom:32px;line-height:1.7;}
-
     .field{margin-bottom:22px;}
     .field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
     .field input,.field select,.field textarea{width:100%;padding:12px 16px;background:var(--paper);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);outline:none;transition:border-color 0.2s;border-radius:0;-webkit-appearance:none;}
     .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
     .field textarea{min-height:100px;resize:vertical;line-height:1.8;}
-
-    /* OFFRES */
     .offres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:8px;}
     .offre-card{background:var(--paper);padding:24px 16px;text-align:center;cursor:pointer;transition:all 0.2s;}
     .offre-card:hover{background:var(--cream);}
@@ -47,8 +41,6 @@
     .offre-card.sel .offre-delai{color:rgba(245,240,232,0.45);}
     .offre-prix{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--ink);}
     .offre-card.sel .offre-prix{color:var(--cream);}
-
-    /* PRESTIGE */
     .prestige-option{border:0.5px solid var(--border);padding:16px 20px;background:var(--paper);cursor:pointer;transition:all 0.2s;display:flex;align-items:flex-start;gap:14px;}
     .prestige-option:hover{border-color:var(--accent);}
     .prestige-option.sel{border:1.5px solid var(--accent);background:var(--cream);}
@@ -60,28 +52,21 @@
     .prestige-title{font-size:13px;font-weight:400;color:var(--ink);margin-bottom:3px;}
     .prestige-desc{font-size:12px;color:var(--muted);line-height:1.6;}
     .prestige-prix{font-size:13px;color:var(--accent);font-weight:400;white-space:nowrap;}
-
-    /* RECAP */
     .recap{background:var(--paper);border:0.5px solid var(--border);padding:24px;margin-bottom:20px;}
     .recap-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:0.5px solid var(--border);font-size:13px;}
     .recap-row:last-child{border:none;font-size:15px;font-weight:400;padding-top:14px;}
     .recap-row span:first-child{color:var(--muted);}
-
     .secure-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:20px;}
     #card-element{padding:14px 16px;background:var(--paper);border:0.5px solid var(--border);}
     #card-error{color:#c0392b;font-size:12px;margin-top:6px;min-height:18px;}
-
     .actions{display:flex;gap:12px;margin-top:32px;}
     .btn-next{flex:1;padding:14px;background:var(--ink);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
     .btn-next:hover:not(:disabled){background:var(--accent);}
     .btn-next:disabled{background:var(--muted);cursor:not-allowed;}
     .btn-back{padding:14px 20px;background:transparent;color:var(--muted);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
     .btn-back:hover{color:var(--ink);border-color:var(--ink);}
-
     .spinner{display:inline-block;width:14px;height:14px;border:1.5px solid rgba(245,240,232,0.3);border-top-color:var(--cream);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
     @keyframes spin{to{transform:rotate(360deg);}}
-
-    /* SUCCÈS */
     .success-wrap{text-align:center;padding:60px 32px;}
     .success-icon{font-size:52px;margin-bottom:24px;}
     .success-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;margin-bottom:14px;}
@@ -90,8 +75,9 @@
     .success-note{font-size:12px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 32px;}
     .prestige-badge{display:inline-block;background:var(--warm);border:0.5px solid var(--accent);padding:8px 20px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:24px;}
     .btn-home{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:2px;}
-
     .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+    .adresse-block{background:var(--warm);border:0.5px solid var(--accent);padding:16px 20px;margin-bottom:22px;}
+    .adresse-note{font-size:12px;color:var(--accent);margin-bottom:16px;line-height:1.6;}
     @media(max-width:600px){nav{padding:14px 20px;}.page{padding:24px 20px;}.offres-grid{grid-template-columns:1fr;}.grid2{grid-template-columns:1fr;}}
   </style>
 </head>
@@ -178,19 +164,21 @@
   </div>
 
   <div id="adresse-prestige-wrap" style="display:none;">
-    <p style="font-size:12px;color:var(--accent);margin-bottom:16px;letter-spacing:1px;">📦 Édition Prestige — nous vous enverrons le bon cadeau physique à cette adresse (3-5 jours ouvrés)</p>
-    <div class="field">
-      <label>Adresse *</label>
-      <input type="text" id="adresse-ligne1" placeholder="12 rue des Lilas">
-    </div>
-    <div class="grid2">
+    <div class="adresse-block">
+      <p class="adresse-note">📦 Édition Prestige — nous vous enverrons le bon cadeau physique à cette adresse sous 3 à 5 jours ouvrés.</p>
       <div class="field">
-        <label>Code postal *</label>
-        <input type="text" id="adresse-cp" placeholder="75001">
+        <label>Adresse *</label>
+        <input type="text" id="adresse-ligne1" placeholder="12 rue des Lilas">
       </div>
-      <div class="field">
-        <label>Ville *</label>
-        <input type="text" id="adresse-ville" placeholder="Paris">
+      <div class="grid2">
+        <div class="field">
+          <label>Code postal *</label>
+          <input type="text" id="adresse-cp" placeholder="75001">
+        </div>
+        <div class="field">
+          <label>Ville *</label>
+          <input type="text" id="adresse-ville" placeholder="Paris">
+        </div>
       </div>
     </div>
   </div>
@@ -200,6 +188,7 @@
     <button class="btn-next" onclick="aller(3)">Continuer — Paiement →</button>
   </div>
 </div>
+
 <!-- ÉTAPE 3 : PAIEMENT -->
 <div class="page" id="p3">
   <p class="eyebrow">Paiement</p>
@@ -238,11 +227,11 @@
 <script>
 const SUPA_URL  = 'https://syinrjjnyemvfpyqorfu.supabase.co';
 const SUPA_KEY  = 'sb_publishable_mu25XGiq_gxJWdX9Lb6X1g_cjfisyq9';
-const STRIPE_PK = '	pk_live_51TgT1SDLqrqvGUTTx3D9prsJm7I76GORPLtKF8Su1dYIGfPg63x7QfCyCSTdX5VdWUC83EL4YMjA24qQlW6g2bQW00HO3CtXyP';
+const STRIPE_PK = 'pk_live_51TgT1SDLqrqvGUTTx3D9prsJm7I76GORPLtKF8Su1dYIGfPg63x7QfCyCSTdX5VdWUC83EL4YMjA24qQlW6g2bQW00HO3CtXyP';
 const PRIX = { simple:14.90, longue:19.90, grands:29.90 };
 const OFFRE_LABEL = { simple:'Lettre simple (1 an)', longue:'Lettre longue durée (3 ou 5 ans)', grands:'Grands moments (10 ans)' };
 
-const S = { step:1, offre:'simple', prestige:false, petitMot:'', acheteurNom:'', acheteurEmail:'' };
+const S = { step:1, offre:'simple', prestige:false, petitMot:'', acheteurNom:'', acheteurEmail:'', adresse:null };
 
 const stripe = Stripe(STRIPE_PK);
 const elements = stripe.elements();
@@ -272,6 +261,13 @@ function valEtape2() {
   if (!email.includes('@')) { alert('Email invalide.'); return false; }
   S.acheteurNom = nom;
   S.acheteurEmail = email;
+  if (S.prestige) {
+    const ligne1 = document.getElementById('adresse-ligne1').value.trim();
+    const cp = document.getElementById('adresse-cp').value.trim();
+    const ville = document.getElementById('adresse-ville').value.trim();
+    if (!ligne1 || !cp || !ville) { alert('Merci de remplir votre adresse postale pour l\'Édition Prestige.'); return false; }
+    S.adresse = { ligne1, cp, ville };
+  }
   return true;
 }
 
@@ -284,6 +280,7 @@ function choixOffre(el, offre) {
 function togglePrestige() {
   S.prestige = !S.prestige;
   document.getElementById('prestige-opt').classList.toggle('sel', S.prestige);
+  document.getElementById('adresse-prestige-wrap').style.display = S.prestige ? 'block' : 'none';
 }
 
 function afficherRecap() {
@@ -313,45 +310,40 @@ async function payer() {
   document.getElementById('card-error').textContent = '';
   S.petitMot = document.getElementById('petit-mot').value.trim();
 
- try {
-  // 1. Créer le PaymentIntent côté serveur
-  const montant = PRIX[S.offre] + (S.prestige ? 5 : 0);
-  const piRes = await fetch('/api/create-payment-intent', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ amount: montant })
-  });
-  const { clientSecret, error: piErr } = await piRes.json();
-  if (piErr) throw new Error(piErr);
+  try {
+    const montant = PRIX[S.offre] + (S.prestige ? 5 : 0);
+    const piRes = await fetch('/api/create-payment-intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: montant })
+    });
+    const { clientSecret, error: piErr } = await piRes.json();
+    if (piErr) throw new Error(piErr);
 
-  // 2. Confirmer le paiement
-  const { paymentIntent, error: strErr } = await stripe.confirmCardPayment(clientSecret, {
-    payment_method: {
-      card: card,
-      billing_details: { name: S.acheteurNom, email: S.acheteurEmail }
-    }
-  });
-  if (strErr) throw new Error(strErr.message);
-  if (paymentIntent.status !== 'succeeded') throw new Error('Paiement non confirmé');
+    const { paymentIntent, error: strErr } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: card,
+        billing_details: { name: S.acheteurNom, email: S.acheteurEmail }
+      }
+    });
+    if (strErr) throw new Error(strErr.message);
+    if (paymentIntent.status !== 'succeeded') throw new Error('Paiement non confirmé');
 
-  // 3. Enregistrer dans Supabase
-  const code = genCode();
-  const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-  const { error: sbErr } = await sb.from('codes_cadeaux').insert([{
-    code,
-    acheteur_nom: S.acheteurNom,
-    acheteur_email: S.acheteurEmail,
-    offre: S.offre,
-    prestige: S.prestige,
-    petit_mot: S.petitMot,
-    prix: montant,
-    statut: 'disponible',
-    created_at: new Date().toISOString()
-  }]);
-  if (sbErr) throw new Error('Erreur : ' + sbErr.message);
+    const code = genCode();
+    const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+    const { error: sbErr } = await sb.from('codes_cadeaux').insert([{
+      code,
+      acheteur_nom: S.acheteurNom,
+      acheteur_email: S.acheteurEmail,
+      offre: S.offre,
+      prestige: S.prestige,
+      petit_mot: S.petitMot,
+      prix: montant,
+      statut: 'disponible',
+      created_at: new Date().toISOString()
+    }]);
     if (sbErr) throw new Error('Erreur : ' + sbErr.message);
 
-    // Email code cadeau via Edge Function
     await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -363,7 +355,8 @@ async function payer() {
           code,
           offre: OFFRE_LABEL[S.offre],
           prestige: S.prestige,
-          petit_mot: S.petitMot
+          petit_mot: S.petitMot,
+          adresse: S.adresse
         }
       })
     });
@@ -373,8 +366,8 @@ async function payer() {
       ? '<div class="prestige-badge">✓ Édition Prestige incluse</div>'
       : '';
     document.getElementById('success-note').textContent = S.prestige
-      ? 'Le code cadeau et le bon cadeau PDF ont été envoyés à votre email. Le bon cadeau physique sera glissé dans l\'enveloppe le jour de l\'envoi.'
-      : 'Le code cadeau et le bon cadeau PDF ont été envoyés à votre email. Offrez ce code au destinataire pour qu\'il écrive sa lettre sur Scellé.';
+      ? 'Le code cadeau a été envoyé à votre email. Le bon cadeau physique vous sera expédié sous 3 à 5 jours ouvrés — vous pourrez l\'offrir en main propre.'
+      : 'Le code cadeau a été envoyé à votre email. Transmettez-le au destinataire pour qu\'il écrive sa lettre sur Scellé.';
 
     aller(4);
   } catch(err) {
