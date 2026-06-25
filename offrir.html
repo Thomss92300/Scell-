@@ -296,26 +296,42 @@ async function payer() {
   document.getElementById('card-error').textContent = '';
   S.petitMot = document.getElementById('petit-mot').value.trim();
 
-  try {
-    const { paymentMethod, error: strErr } = await stripe.createPaymentMethod({
-      type:'card', card,
-      billing_details:{ name:S.acheteurNom, email:S.acheteurEmail }
-    });
-    if (strErr) throw new Error(strErr.message);
+ try {
+  // 1. Créer le PaymentIntent côté serveur
+  const montant = PRIX[S.offre] + (S.prestige ? 5 : 0);
+  const piRes = await fetch('/api/create-payment-intent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ amount: montant })
+  });
+  const { clientSecret, error: piErr } = await piRes.json();
+  if (piErr) throw new Error(piErr);
 
-    const code = genCode();
-    const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-    const { error: sbErr } = await sb.from('codes_cadeaux').insert([{
-      code,
-      acheteur_nom: S.acheteurNom,
-      acheteur_email: S.acheteurEmail,
-      offre: S.offre,
-      prestige: S.prestige,
-      petit_mot: S.petitMot,
-      prix: PRIX[S.offre] + (S.prestige ? 5 : 0),
-      statut: 'disponible',
-      created_at: new Date().toISOString()
-    }]);
+  // 2. Confirmer le paiement
+  const { paymentIntent, error: strErr } = await stripe.confirmCardPayment(clientSecret, {
+    payment_method: {
+      card: card,
+      billing_details: { name: S.acheteurNom, email: S.acheteurEmail }
+    }
+  });
+  if (strErr) throw new Error(strErr.message);
+  if (paymentIntent.status !== 'succeeded') throw new Error('Paiement non confirmé');
+
+  // 3. Enregistrer dans Supabase
+  const code = genCode();
+  const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+  const { error: sbErr } = await sb.from('codes_cadeaux').insert([{
+    code,
+    acheteur_nom: S.acheteurNom,
+    acheteur_email: S.acheteurEmail,
+    offre: S.offre,
+    prestige: S.prestige,
+    petit_mot: S.petitMot,
+    prix: montant,
+    statut: 'disponible',
+    created_at: new Date().toISOString()
+  }]);
+  if (sbErr) throw new Error('Erreur : ' + sbErr.message);
     if (sbErr) throw new Error('Erreur : ' + sbErr.message);
 
     // Email code cadeau via Edge Function
