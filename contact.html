@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Scellé</title>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZCFPTHR8H"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WZCFPTHR8H');
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{--ink:#1a1714;--cream:#f5f0e8;--warm:#e8dfc8;--accent:#8b6f47;--muted:#9e9589;--paper:#faf7f2;--border:rgba(26,23,20,0.15);}
+    body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;min-height:100vh;}
+
+    nav{display:flex;justify-content:space-between;align-items:center;padding:18px 40px;background:var(--cream);border-bottom:0.5px solid var(--border);}
+    .logo{font-family:'Cormorant Garamond',serif;font-size:20px;letter-spacing:6px;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+    .nav-links{display:flex;gap:32px;}
+    .nav-links a{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--ink);}
+
+    .wrap{max-width:600px;margin:0 auto;padding:64px 32px;}
+    .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:12px;}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;text-align:center;margin-bottom:12px;color:var(--ink);}
+    .page-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:48px;line-height:1.7;}
+
+    .contact-options{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-bottom:48px;}
+    .contact-card{background:var(--paper);padding:28px 20px;text-align:center;}
+    .contact-icon{font-size:24px;margin-bottom:12px;}
+    .contact-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .contact-value{font-size:14px;color:var(--ink);}
+    .contact-value a{color:var(--accent);text-decoration:none;}
+
+    .field{margin-bottom:22px;}
+    .field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+    .field input,.field textarea,.field select{width:100%;padding:12px 16px;background:var(--paper);border:0.5px solid var(--border);font-family:'Jost',sans-serif;font-size:14px;font-weight:300;color:var(--ink);outline:none;transition:border-color 0.2s;border-radius:0;}
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+    .field textarea{min-height:140px;resize:vertical;line-height:1.7;}
+
+    .btn-send{width:100%;padding:14px;background:var(--ink);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background 0.2s;}
+    .btn-send:hover:not(:disabled){background:var(--accent);}
+    .btn-send:disabled{background:var(--muted);cursor:not-allowed;}
+
+    .spinner{display:inline-block;width:14px;height:14px;border:1.5px solid rgba(245,240,232,0.3);border-top-color:var(--cream);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .form-msg{font-size:13px;text-align:center;margin-top:16px;}
+    .form-msg.success{color:#2d6a4f;}
+    .form-msg.error{color:#c0392b;}
+
+    .success-wrap{text-align:center;padding:60px 20px;}
+    .success-icon{font-size:48px;margin-bottom:20px;}
+    .success-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:12px;}
+    .success-sub{font-size:13px;color:var(--muted);line-height:1.8;}
+    .hidden{display:none;}
+
+    footer{padding:24px 40px;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid var(--border);background:var(--cream);flex-wrap:wrap;gap:12px;}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:16px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
+    .footer-links{display:flex;gap:24px;}
+    .footer-links a{font-size:11px;letter-spacing:1px;color:var(--muted);text-decoration:none;}
+
+    @media(max-width:600px){
+      .wrap{padding:40px 20px;}
+      .contact-options{grid-template-columns:1fr;}
+      footer{flex-direction:column;text-align:center;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Scellé</a>
+  <div class="nav-links">
+    <a href="ecrire.html">Écrire</a>
+    <a href="offrir.html">Offrir</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html" class="active">Contact</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <p class="eyebrow">Nous contacter</p>
+  <h1 class="page-title">Une question ?</h1>
+  <p class="page-sub">Nous répondons généralement sous 24 à 48h.</p>
+
+  <div class="contact-options">
+    <div class="contact-card">
+      <div class="contact-icon">✉️</div>
+      <p class="contact-label">Email</p>
+      <p class="contact-value"><a href="mailto:contact@scellé.fr">contact@scellé.fr</a></p>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">⏱</div>
+      <p class="contact-label">Délai de réponse</p>
+      <p class="contact-value">24 à 48h</p>
+    </div>
+  </div>
+
+  <div id="form-wrap">
+    <div class="field">
+      <label>Ton prénom et nom *</label>
+      <input type="text" id="nom" placeholder="Marie Dupont">
+    </div>
+    <div class="field">
+      <label>Ton email *</label>
+      <input type="email" id="email" placeholder="marie@email.com">
+    </div>
+    <div class="field">
+      <label>Sujet</label>
+      <select id="sujet">
+        <option value="Question générale">Question générale</option>
+        <option value="Commande en cours">Ma commande</option>
+        <option value="Changement d'adresse">Changement d'adresse</option>
+        <option value="Annulation / remboursement">Annulation / remboursement</option>
+        <option value="Code cadeau">Code cadeau</option>
+        <option value="Autre">Autre</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Ton message *</label>
+      <textarea id="message" placeholder="Écris-nous ici..."></textarea>
+    </div>
+    <button class="btn-send" id="btn-send" onclick="envoyerMessage()">Envoyer le message</button>
+    <div class="form-msg" id="form-msg"></div>
+  </div>
+
+  <div id="success-wrap" class="hidden">
+    <div class="success-wrap">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Message envoyé</h2>
+      <p class="success-sub">Merci, nous te répondrons sous 24 à 48h à l'adresse indiquée.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-logo">Scellé</span>
+  <div class="footer-links">
+    <a href="index.html#faq">FAQ</a>
+    <a href="mentions.html">Mentions légales</a>
+    <a href="cgv.html">CGV</a>
+  </div>
+</footer>
+
+<script>
+const SUPA_URL = 'https://syinrjjnyemvfpyqorfu.supabase.co';
+const SUPA_KEY = 'sb_publishable_mu25XGiq_gxJWdX9Lb6X1g_cjfisyq9';
+
+async function envoyerMessage() {
+  const nom = document.getElementById('nom').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const sujet = document.getElementById('sujet').value;
+  const message = document.getElementById('message').value.trim();
+  const msgEl = document.getElementById('form-msg');
+
+  if (!nom || !email || !message) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = 'Merci de remplir tous les champs obligatoires (*).';
+    return;
+  }
+  if (!email.includes('@')) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = 'Adresse email invalide.';
+    return;
+  }
+
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Envoi...';
+  msgEl.textContent = '';
+
+  try {
+    const sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+    const { error: sbErr } = await sb.from('messages_contact').insert([{
+      nom, email, sujet, message, created_at: new Date().toISOString()
+    }]);
+    if (sbErr) throw new Error(sbErr.message);
+
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'contact', data: { nom, email, sujet, message } })
+    });
+
+    document.getElementById('form-wrap').classList.add('hidden');
+    document.getElementById('success-wrap').classList.remove('hidden');
+
+  } catch(err) {
+    msgEl.className = 'form-msg error';
+    msgEl.textContent = 'Une erreur est survenue. Réessaie ou écris-nous directement à contact@scellé.fr';
+    btn.disabled = false;
+    btn.textContent = 'Envoyer le message';
+  }
+}
+</script>
+</body>
+</html>
